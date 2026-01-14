@@ -1,7 +1,7 @@
 import pygame
 import time
 import numpy as np
-import sim_params as CFG
+import config as CFG
 import sim_logic as Logic
 from db_manager import DBManager
 
@@ -142,7 +142,7 @@ class Slider:
         # Draw Label & Value
         if font:
             label_surf = font.render(f"{self.label}: {self.val:.2f}", True, WHITE)
-            screen.blit(label_surf, (self.rect.x, self.rect.y - 20))
+            screen.blit(label_surf, (self.rect.x, self.rect.y - 17))
         
         # Draw Bar
         pygame.draw.rect(screen, GRAY, self.rect)
@@ -249,11 +249,17 @@ def main():
     rec_data = []
     rec_start_time = 0
     
-    # Initial Positions
-    ball = Logic.Pose2D(0.0, 0.0)
-    passer = Logic.Pose2D(0.1, 0.0)
-    striker = Logic.Pose2D(-3.0, 3.0)
-    opp_user = Logic.Pose2D(-1.8, 0.5)
+    # Initial Positions from CONFIG
+    ball = Logic.Pose2D(*CFG.INITIAL_POSITIONS["ball"])
+    passer = Logic.Pose2D(*CFG.INITIAL_POSITIONS["passer"])
+    striker = Logic.Pose2D(*CFG.INITIAL_POSITIONS["striker"])
+    opp_user = Logic.Pose2D(*CFG.INITIAL_POSITIONS["opp_user"])
+    
+    # Define teammates/opponents lists if needed by Logic, or just rely on Logic.
+    # Note: Teammates/Opponents are typically managed by 'sim_logic' or a list here.
+    # If they are managed here:
+    # teammates = [Logic.Teammate(pid, Logic.Pose2D(x, y)) for pid, x, y in CFG.INITIAL_TEAMMATES]
+    # opponents = [Logic.Opponent(Logic.Pose2D(x, y)) for x, y in CFG.INITIAL_OPPONENTS]
     
     # Stats
     goals = 0
@@ -279,7 +285,7 @@ def main():
     sy = 320 # Start below heatmaps
     sw = 280
     sh = 10
-    gap = 28 # Reduced gap
+    gap = 33 # Adjustment: -5px
     
     # Helper to add slider
     def add_s(col, idx, key, label, minv, maxv, ref):

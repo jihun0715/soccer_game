@@ -1,5 +1,4 @@
-# Parameters for Soccer Simulation
-# Users can modify these values to optimize Off-the-Ball and Pass logic.
+# Centralized Configuration for Soccer Simulation
 
 # ============================================================
 # 1) Pass Logic Parameters (CalcPassDir)
@@ -82,6 +81,37 @@ ST_PARAMS = {
     "search_x_margin": 1.7,
     "grid_step": 0.1,
 }
+
+# ============================================================
+# 3) Initial Game State
+# ============================================================
+# Coordinates: (X, Y)
+# Field Range: X: [-4.5, 4.5], Y: [-3.0, 3.0]
+INITIAL_POSITIONS = {
+    "ball": (0.0, 0.0),
+    "passer": (0.1, 0.0),       # Robot holding the ball
+    "striker": (-3.0, 3.0),     # The agent we optimization
+    "opp_user": (-1.8, 0.5),    # User controlled opponent
+}
+
+# Teammates: List of (ID, X, Y)
+INITIAL_TEAMMATES = [
+    # (id, x, y)
+    (1, -2.0, -2.0),
+    (2, -0.5, 2.5),
+    (3, -3.5, 0.0)
+]
+
+# Opponents: List of (X, Y)
+INITIAL_OPPONENTS = [
+    (-1.5, -1.0),
+    (-0.5, 1.5),
+    (-2.5, 1.5),
+    (-3.0, -1.5)
+]
+
+# Parameters for Robot Agents
+ROBOT_RADIUS = 0.35 # Used for collision/drawing
 
 # ============================================================
 # 3) Simulation Settings
