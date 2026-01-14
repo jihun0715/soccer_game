@@ -16,9 +16,9 @@ PASS_PARAMS = {
     "field_half_width": 3.0,
 
     # Grid Search Parameters
-    "grid_half_xrange": 3.0,    # Search radius X
-    "grid_half_yrange": 2.5,    # Search radius Y
-    "grid_step": 0.2,           # Grid resolution (lower = more precise but slower)
+    "max_pass_reach_x": 3.0,    # Search radius X
+    "max_pass_reach_y": 2.5,    # Search radius Y
+    "costmap_step": 0.2,        # Grid resolution (lower = more precise but slower)
 
     # Base Score Weights
     "base_score": 10.0,

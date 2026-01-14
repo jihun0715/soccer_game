@@ -36,6 +36,60 @@ st.sidebar.title("🛠 Logic Settings")
 st_params = CFG.ST_PARAMS.copy()
 pass_params = CFG.PASS_PARAMS.copy()
 
+# --- Defender Pass Params ---
+with st.sidebar.expander("🛡️ Defender Pass Params", expanded=False):
+    st.markdown("**Selection & Thresholds**")
+    pass_params["min_pass_threshold"] = st.slider("Min Pass Dist", 0.0, 5.0, float(pass_params["min_pass_threshold"]))
+    pass_params["max_pass_threshold"] = st.slider("Max Pass Dist", 1.0, 10.0, float(pass_params["max_pass_threshold"]))
+    pass_params["score_threshold"] = st.slider("Score Threshold", -10.0, 20.0, float(pass_params["score_threshold"]))
+    
+    st.markdown("**Teammate Selection Weights**")
+    pass_params["tm_select_w_dist"] = st.slider("TM Select Dist W", 0.0, 5.0, float(pass_params["tm_select_w_dist"]))
+    pass_params["tm_select_w_x"] = st.slider("TM Select X W", 0.0, 5.0, float(pass_params["tm_select_w_x"]))
+
+    st.markdown("**Score Weights**")
+    pass_params["base_score"] = st.slider("Base Score", 0.0, 20.0, float(pass_params["base_score"]))
+    pass_params["w_abs_dx"] = st.slider("W Abs Dx", 0.0, 5.0, float(pass_params["w_abs_dx"]))
+    pass_params["w_abs_dy"] = st.slider("W Abs Dy", 0.0, 5.0, float(pass_params["w_abs_dy"]))
+    pass_params["w_x"] = st.slider("W X (Forward)", 0.0, 5.0, float(pass_params["w_x"]))
+    pass_params["w_y"] = st.slider("W Y (Center)", 0.0, 5.0, float(pass_params["w_y"]))
+
+    st.markdown("**Opponent Avoiding**")
+    pass_params["opp_path_margin"] = st.slider("Opp Path Margin", 0.1, 3.0, float(pass_params["opp_path_margin"]))
+    pass_params["opp_penalty"] = st.slider("Opp Penalty", 0.0, 50.0, float(pass_params["opp_penalty"]))
+    pass_params["opp_memory_sec"] = st.slider("Opp Memory (s)", 0.0, 10.0, float(pass_params["opp_memory_sec"]))
+
+    st.markdown("**Grid Search**")
+    pass_params["grid_step"] = st.slider("Grid Step (Def)", 0.1, 1.0, float(pass_params["grid_step"]))
+
+
+# --- Striker Off-Ball Params ---
+with st.sidebar.expander("⚡️ Striker Logic Params", expanded=True):
+    st.markdown("**Positioning Goals**")
+    st_params["dist_from_goal"] = st.slider("Dist From Goal", 0.0, 10.0, float(st_params["dist_from_goal"]))
+    
+    st.markdown("**Base Weights**")
+    st_params["base_x_weight"] = st.slider("Base X W", 0.0, 10.0, float(st_params["base_x_weight"]))
+    st_params["center_y_weight"] = st.slider("Center Y W", 0.0, 10.0, float(st_params["center_y_weight"]))
+    st_params["forward_weight"] = st.slider("Forward W", 0.0, 10.0, float(st_params["forward_weight"]))
+    st_params["ball_dist_weight"] = st.slider("Ball Dist W", 0.0, 10.0, float(st_params["ball_dist_weight"]))
+    
+    st.markdown("**Defender Avoidance**")
+    st_params["defender_dist_weight"] = st.slider("Def Dist W", 0.0, 50.0, float(st_params["defender_dist_weight"]))
+    st_params["defender_dist_cap"] = st.slider("Def Dist Cap", 0.5, 10.0, float(st_params["defender_dist_cap"]))
+    st_params["symmetry_weight"] = st.slider("Symmetry W", 0.0, 20.0, float(st_params["symmetry_weight"]))
+    
+    st.markdown("**Path Penalties**")
+    st_params["path_margin"] = st.slider("Path Margin", 0.1, 3.0, float(st_params["path_margin"]))
+    st_params["pass_penalty_weight"] = st.slider("Pass Path Pen", 0.0, 50.0, float(st_params["pass_penalty_weight"]))
+    st_params["shot_penalty_weight"] = st.slider("Shot Path Pen", 0.0, 50.0, float(st_params["shot_penalty_weight"]))
+    st_params["movement_penalty_weight"] = st.slider("Move Path Pen", 0.0, 50.0, float(st_params["movement_penalty_weight"]))
+    st_params["opp_memory_sec"] = st.slider("Opp Memory (s) [ST]", 0.0, 10.0, float(st_params["opp_memory_sec"]))
+
+    st.markdown("**Stability**")
+    st_params["hysteresis_x_weight"] = st.slider("Hysteresis X", 0.0, 10.0, float(st_params["hysteresis_x_weight"]))
+    st_params["hysteresis_y_weight"] = st.slider("Hysteresis Y", 0.0, 10.0, float(st_params["hysteresis_y_weight"]))
+
 # Layout
 col_ctrl, col_stat = st.columns([1, 2])
 with col_ctrl:
@@ -69,16 +123,11 @@ with col_ctrl:
                 st.success(f"Run {run_id} Saved!")
                 st.rerun()
 
-    # 3. Sliders (The "UI to move")
-    st.markdown("---")
-    st.markdown("### ♟️ Move Defender")
-    
-    def_x = st.slider("↔️ X Position", -5.0, 5.0, key="def_x")
-    def_y = st.slider("↕️ Y Position", -3.5, 3.5, key="def_y")
-    
-    # Update State
-    st.session_state["opp_user"].x = def_x
-    st.session_state["opp_user"].y = def_y
+# 3. Defender Control (Joystick)
+
+
+
+
 
 with col_stat:
     c1, c2, c3 = st.columns(3)
@@ -87,6 +136,7 @@ with col_stat:
     if st.session_state["recording"]:
         c3.warning("🔴 RECORDING... (Press SAVE to Upload)")
 
+# --- Simulation Logic ---
 # --- Simulation Logic ---
 def run_simulation_step():
     ball = st.session_state["ball"]
@@ -124,10 +174,25 @@ def run_simulation_step():
     return best_pos, best_score, pfound, pass_target
 
 # Run 1 Step
-best_pos, best_score, pfound, pass_target = run_simulation_step()
+if st.session_state["running"]:
+    best_pos, best_score, pfound, pass_target = run_simulation_step()
+else:
+    # Static placeholders for view when paused
+    # We still need to calculate best_pos to show where the AI *would* go, or just show last state
+    # For simplicity, let's just run logic or use dummy
+    ball = st.session_state["ball"]
+    striker = st.session_state["striker"]
+    opp_user = st.session_state["opp_user"]
+    
+    # Calculate map just for visualization (no movement)
+    opponents = [Logic.Opponent(Logic.Pose2D(-3.8, 0.5), 0.0), Logic.Opponent(opp_user, 0.0)]
+    best_pos, best_score = Logic.compute_striker_costmap(striker, ball, opponents, st_params)
+    pfound = False
+    pass_target = Logic.Pose2D(0,0)
+
 
 # Logging
-if st.session_state["recording"]:
+if st.session_state["recording"] and st.session_state["running"]:
     st.session_state["rec_data"].append({
         "t": time.time(),
         "ofb_score": float(best_score),
@@ -139,11 +204,6 @@ if st.session_state["recording"]:
 # 1. Background (Green Field)
 domain_x = [-5.0, 5.0]
 domain_y = [-3.5, 3.5]
-bg_df = pd.DataFrame({'x': [0], 'y': [0]}) # Dummy
-field_bg = alt.Chart(bg_df).mark_rect(color='#228B22', opacity=0.8).encode(
-    x=alt.value(0), x2=alt.value(700), # Pixel width matching properties below
-    y=alt.value(0), y2=alt.value(500)
-)
 # Note: mark_rect with pixel values is tricky. 
 # Better: Just set the chart background in config or use a huge point.
 # Let's use standard domain encoding.
@@ -178,10 +238,11 @@ entities = [
     {"x": b.x, "y": b.y, "type": "Ball", "color": "#FFA500", "size": 150, "shape": "circle"},
     {"x": u.x, "y": u.y, "type": "Defender (You)", "color": "#FF0000", "size": 400, "shape": "diamond"},
     {"x": -3.8, "y": 0.5, "type": "GK", "color": "#8B0000", "size": 200, "shape": "cross"},
-    {"x": best_pos[0], "y": best_pos[1], "type": "Target", "color": "#FFFFFF", "size": 100, "shape": "cross"},
 ]
-if pfound:
-     entities.append({"x": pass_target.x, "y": pass_target.y, "type": "Pass Target", "color": "#FFFF00", "size": 100, "shape": "triangle"})
+if st.session_state["running"]:
+    entities.append({"x": best_pos[0], "y": best_pos[1], "type": "Target", "color": "#FFFFFF", "size": 100, "shape": "cross"})
+    if pfound:
+         entities.append({"x": pass_target.x, "y": pass_target.y, "type": "Pass Target", "color": "#FFFF00", "size": 100, "shape": "triangle"})
 
 ent_df = pd.DataFrame(entities)
 players = alt.Chart(ent_df).mark_point(filled=True).encode(
@@ -197,7 +258,7 @@ players = alt.Chart(ent_df).mark_point(filled=True).encode(
 # Order: Lines -> Players (Background handled by theme or style usually, but here lines give structure)
 chart = (field_lines + players).properties(
     width=700, height=500,
-    title=f"Field View (Score: {best_score:.2f}) {'[OPEN!]' if pfound else ''}"
+    title=f"Field View (Score: {best_score:.2f})" if st.session_state["running"] else "Field View (Paused)"
 ).configure_view(
     strokeWidth=0,
     fill='#228B22' # Set Chart Background to Green
@@ -207,6 +268,55 @@ chart = (field_lines + players).properties(
 )
 
 st.altair_chart(chart, width="stretch")
+
+# --- Keyboard Control (WASD) ---
+st.markdown("### ⌨️ Keyboard Control")
+from st_keyup import st_keyup as keyup
+
+# Create a columns layout
+c_joy, c_key = st.columns(2)
+
+with c_joy:
+    st.caption("Joystick")
+    from st_joystick import st_joystick as joystick
+    joystick_data = joystick()
+    
+    if joystick_data and "frontPosition" in joystick_data:
+        raw_x = joystick_data["frontPosition"].get("x", 0.0)
+        raw_y = joystick_data["frontPosition"].get("y", 0.0)
+        jx = raw_x / 50.0
+        jy = -(raw_y / 50.0)
+        
+        if abs(jx) > 0.1 or abs(jy) > 0.1:
+            step = CFG.SIM["user_step"]
+            st.session_state["opp_user"].x += jx * step * 0.5
+            st.session_state["opp_user"].y += jy * step * 0.5
+            st.session_state["opp_user"].x = Logic.clamp(st.session_state["opp_user"].x, -5.0, 5.0)
+            st.session_state["opp_user"].y = Logic.clamp(st.session_state["opp_user"].y, -3.5, 3.5)
+            st.rerun()
+
+with c_key:
+    st.caption("Keyboard (Focus input below)")
+    # debounce=100ms helps responsiveness vs rerun flood
+    key_input = keyup("wasd_input", label="Type WASD", debounce=50)
+    
+    if key_input:
+        last_char = key_input[-1].lower() if len(key_input) > 0 else ""
+        step = CFG.SIM["user_step"] * 2.0 # Higher step for single taps
+        
+        if last_char == 'w': st.session_state["opp_user"].y += step
+        elif last_char == 's': st.session_state["opp_user"].y -= step
+        elif last_char == 'a': st.session_state["opp_user"].x -= step
+        elif last_char == 'd': st.session_state["opp_user"].x += step
+        
+        # Clamp
+        st.session_state["opp_user"].x = Logic.clamp(st.session_state["opp_user"].x, -5.0, 5.0)
+        st.session_state["opp_user"].y = Logic.clamp(st.session_state["opp_user"].y, -3.5, 3.5)
+        
+        if len(key_input) > 10: # Clear buffer
+             st.rerun() # This might be tricky, keyup maintains state. 
+             # Ideally we want a non-text method.
+
 
 # Loop
 if st.session_state["running"]:
