@@ -115,16 +115,61 @@ class DBManager:
         except ImportError:
             pass
 
+        # 3. Check for Time Drift (Crucial for JWT)
+        try:
+            import requests
+            import email.utils
+            from datetime import datetime, timedelta
+            
+            print("[DB] Checking System Time vs Google Time...")
+            resp = requests.head("https://www.google.com", timeout=2)
+            if 'date' in resp.headers:
+                server_date = resp.headers['date']
+                # Parse HTTP Date format
+                server_ts = email.utils.mktime_tz(email.utils.parsedate_tz(server_date))
+                local_ts = time.time()
+                drift = server_ts - local_ts
+                
+                print(f"[DB] System Time: {local_ts}, Server Time: {server_ts}, Drift: {drift:.1f}s")
+
+                if abs(drift) > 300: # Calibration if > 5 mins off
+                    print(f"[DB] CRITICAL: Large Time Drift ({drift:.1f}s) Detected!")
+                    print("[DB] Monkey-patching time.time() to fix Firebase Auth...")
+                    
+                    # Monkey Patch time.time
+                    _orig_time = time.time
+                    time.time = lambda: _orig_time() + drift
+                    
+                    # Note: We cannot easily patch datetime.utcnow as it's a built-in C method
+                    # But google.auth mostly uses time.time() for JWT timestamps.
+        except Exception as e:
+            print(f"[DB] Time Check Failed (Non-critical?): {e}")
+
         # 2. Try Local File
         if os.path.exists(KEY_PATH):
             try:
-                cred = credentials.Certificate(KEY_PATH)
+                # Manually load to fix potential \n issues in private_key
+                with open(KEY_PATH, "r") as f:
+                    file_dict = json.load(f)
+                
+                if "private_key" in file_dict:
+                    pk = file_dict["private_key"]
+                    # Aggressive CLean: Remove surrounding quotes/spaces, fix escapes
+                    pk = pk.strip().strip('"').strip("'")
+                    pk = pk.replace("\\n", "\n")
+                    
+                    print(f"[DB] Key Processed. Start: {repr(pk[:30])}...")
+                    file_dict["private_key"] = pk
+
+                cred = credentials.Certificate(file_dict)
                 self.firebase_app = firebase_admin.initialize_app(cred, {
                     'databaseURL': FIREBASE_DB_URL
                 })
-                print("[DB] Firebase Connected Successfully.")
+                print("[DB] Firebase App Initialized.")
             except Exception as e:
                 print(f"[DB] Firebase Init Failed: {e}")
+                import traceback
+                traceback.print_exc()
         else:
             print(f"[DB] {KEY_PATH} not found. Local only mode.")
 
@@ -161,12 +206,15 @@ class DBManager:
         print(f"[DB] Local Run saved with ID: {run_id}")
         
         # 2. Cloud Save
+        print("[DB] Attempting Cloud Sync...")
         self.upload_to_firebase(run_id, timestamp, duration, avg_score, config_pass, config_st, log_data)
 
         return run_id
 
     def upload_to_firebase(self, local_id, timestamp, duration, score, cfg_pass, cfg_st, logs):
-        if not self.firebase_app: return
+        if not self.firebase_app:
+            print("[DB] Skip Cloud Sync (App not initialized)")
+            return
         
         try:
             root = db.reference('sim_runs')
@@ -182,7 +230,7 @@ class DBManager:
                     "ST": cfg_st
                 },
                 "logs_count": len(logs),
-                # "logs": logs # Uncomment to upload full logs (heavy bandwidth!)
+                "logs": logs # Full recording data
             }
             
             new_run_ref.set(data)

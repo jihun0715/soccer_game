@@ -584,6 +584,9 @@ def main():
              screen.blit(font.render(f"FPS: {clock.get_fps():.1f}", True, WHITE), (10, 10))
              screen.blit(font.render(f"OFB Score: {best_score:.2f}", True, WHITE), (10, 35))
              screen.blit(font.render(f"Pass Score: {current_pass_score:.2f}", True, WHITE), (10, 60))
+             
+             if recording:
+                 screen.blit(font.render("● RECORDING", True, RED), (10, 85))
 
         pygame.display.flip()
         clock.tick(FPS)
