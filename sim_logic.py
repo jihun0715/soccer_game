@@ -70,7 +70,7 @@ def compute_pass_score_for_target(ball, tm, tx, ty, opponents, params):
     
     ax, ay = ball.x, ball.y
     bx, by = tx, ty
-    margin = params["opp_path_margin"]
+    margin = params["receive_pass_margin"]
     
     for opp in opponents:
         if opp.label != "Opponent": continue
@@ -79,7 +79,8 @@ def compute_pass_score_for_target(ball, tm, tx, ty, opponents, params):
         
         d = point_to_segment_distance(opp.pos.x, opp.pos.y, ax, ay, bx, by)
         if d < margin:
-            score -= (1.0 - d / margin) * params["opp_penalty"] * cf
+             # C++: score -= (1.15 - distToPassPath) * 24.0 * confidenceFactor;
+            score -= (margin - d) * params["opp_penalty"] * cf
             
     return score
 

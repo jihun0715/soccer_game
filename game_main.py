@@ -255,11 +255,10 @@ def main():
     striker = Logic.Pose2D(*CFG.INITIAL_POSITIONS["striker"])
     opp_user = Logic.Pose2D(*CFG.INITIAL_POSITIONS["opp_user"])
     
-    # Define teammates/opponents lists if needed by Logic, or just rely on Logic.
-    # Note: Teammates/Opponents are typically managed by 'sim_logic' or a list here.
-    # If they are managed here:
-    # teammates = [Logic.Teammate(pid, Logic.Pose2D(x, y)) for pid, x, y in CFG.INITIAL_TEAMMATES]
-    # opponents = [Logic.Opponent(Logic.Pose2D(x, y)) for x, y in CFG.INITIAL_OPPONENTS]
+    
+    # Load Extra Agents from Config
+    extra_teammate_data = CFG.INITIAL_TEAMMATES
+    extra_opponent_data = CFG.INITIAL_OPPONENTS
     
     # Stats
     goals = 0
@@ -305,6 +304,7 @@ def main():
     add_s(1, c1, "forward_weight", "Forward Bias", 0.0, 20.0, st_params); c1+=1
     add_s(1, c1, "penalty_weight", "Gen Penalty", 0.0, 30.0, st_params); c1+=1
     add_s(1, c1, "path_margin", "Path Margin", 0.1, 5.0, st_params); c1+=1
+
     add_s(1, c1, "pass_penalty_weight", "Pass Path Pen", 0.0, 50.0, st_params); c1+=1
     add_s(1, c1, "shot_penalty_weight", "Shot Path Pen", 0.0, 50.0, st_params); c1+=1
     add_s(1, c1, "movement_penalty_weight", "Move Path Pen", 0.0, 50.0, st_params); c1+=1
@@ -322,6 +322,7 @@ def main():
     add_s(2, c2, "w_y", "Pass Cnt Bias", 0.0, 5.0, pass_params); c2+=1
     add_s(2, c2, "opp_penalty", "Pass Block Pen", 0.0, 50.0, pass_params); c2+=1
     add_s(2, c2, "score_threshold", "Pass Thresh", 0.0, 20.0, pass_params); c2+=1
+    add_s(2, c2, "receive_pass_margin", "Recv Pass Marg", 0.1, 5.0, pass_params); c2+=1
 
     while running:
         # 1. Event Handling
@@ -371,7 +372,10 @@ def main():
         current_pass_score = 0.0
 
         # Calculate opponents list (Live)
-        opponents = [Logic.Opponent(Logic.Pose2D(-3.8, 0.5), 0.0), Logic.Opponent(opp_user, 0.0)]
+        # User + Config Opponents (GK removed as per request)
+        opponents = [Logic.Opponent(opp_user, 0.0)]
+        for (ox, oy) in extra_opponent_data:
+            opponents.append(Logic.Opponent(Logic.Pose2D(ox, oy), 0.0))
         
         if not paused:
             # AI Logic (Movement)
@@ -383,7 +387,11 @@ def main():
             striker = Logic.move_towards(striker, target, speed, dt)
             
             # Pass Logic
+            # Passer + Striker + Config Teammates
             teammates = [Logic.Teammate(1, passer), Logic.Teammate(2, striker)]
+            for (tid, tx, ty) in extra_teammate_data:
+                # Offset ID to avoid conflict with passer(1)/striker(2) if needed, or just use config ID
+                teammates.append(Logic.Teammate(10 + tid, Logic.Pose2D(tx, ty)))
             best_tm = Logic.select_best_teammate(ball, teammates, 1, pass_params)
             best_tm_cache = best_tm
             if best_tm:
@@ -405,6 +413,8 @@ def main():
             best_pos, best_score = Logic.compute_striker_costmap(striker, ball, opponents, st_params)
             # Hypothetical pass optimization for viz
             teammates = [Logic.Teammate(1, passer), Logic.Teammate(2, striker)]
+            for (tid, tx, ty) in extra_teammate_data:
+                teammates.append(Logic.Teammate(10 + tid, Logic.Pose2D(tx, ty)))
             best_tm_cache = Logic.select_best_teammate(ball, teammates, 1, pass_params)
 
         # --- Update Heatmaps (Throttled but more frequent for smoothness) ---
@@ -533,7 +543,13 @@ def main():
         draw_entity(passer, BLUE, 12, "rect")
         draw_entity(ball, ORANGE, 8, "circle")
         draw_entity(opp_user, RED, 14, "diamond")
-        draw_entity(Logic.Pose2D(-3.8, 0.5), DARK_RED, 12, "rect") # GK
+
+        # Draw Extras
+        for (tid, tx, ty) in extra_teammate_data:
+            draw_entity(Logic.Pose2D(tx, ty), BLUE, 10, "rect")
+            
+        for (ox, oy) in extra_opponent_data:
+            draw_entity(Logic.Pose2D(ox, oy), RED, 10, "diamond")
 
         if not paused and best_pos:
             tx, ty = world_to_screen(best_pos[0], best_pos[1])

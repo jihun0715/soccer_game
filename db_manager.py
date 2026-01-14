@@ -14,7 +14,7 @@ except ImportError:
     print("[DB] firebase-admin not installed. Cloud sync disabled.")
 
 DB_NAME = "soccer_sim.db"
-KEY_PATH = "serviceAccountKey.json"
+KEY_PATH = "soccer-db-f6361-firebase-adminsdk-fbsvc-4e7e5b06ca.json"
 # IMPORTANT: Set this to your Firebase Database URL
 FIREBASE_DB_URL = "https://soccer-db-f6361-default-rtdb.firebaseio.com/"
 

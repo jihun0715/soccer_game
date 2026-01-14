@@ -27,7 +27,7 @@ PASS_PARAMS = {
     "w_y": 0.45,                # Center bias
 
     # Opponent Avoidance
-    "opp_path_margin": 1.15,    # Safety margin around pass path
+    "receive_pass_margin": 1.15,    # Safety margin around pass path
     "opp_penalty": 24.0,        # Score penalty for blocked path
     "opp_memory_sec": 5.0,      # How long to remember opponents
 
@@ -97,17 +97,13 @@ INITIAL_POSITIONS = {
 # Teammates: List of (ID, X, Y)
 INITIAL_TEAMMATES = [
     # (id, x, y)
-    (1, -2.0, -2.0),
-    (2, -0.5, 2.5),
-    (3, -3.5, 0.0)
+    (1, 3.5, 0.0)
 ]
 
 # Opponents: List of (X, Y)
 INITIAL_OPPONENTS = [
-    (-1.5, -1.0),
-    (-0.5, 1.5),
-    (-2.5, 1.5),
-    (-3.0, -1.5)
+    (-3.5, 0.0),
+    (0.0, 1.0)
 ]
 
 # Parameters for Robot Agents
