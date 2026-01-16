@@ -26,74 +26,82 @@ LIGHT_GRAY = (200, 200, 200)
 
 # --- Fallback Font (Minimal 3x5 or 4x6 for legibility without font module) ---
 # 1=Draw, 0=Skip. 3 wide, 5 high.
+# 5x7 Bitmap Font Map (A-Z, 0-9, symbols)
+# 1=Draw, 0=Skip. 5 wide, 7 high.
 FONT_MAP = {
-    'A': [0,1,0, 1,0,1, 1,1,1, 1,0,1, 1,0,1],
-    'B': [1,1,0, 1,0,1, 1,1,0, 1,0,1, 1,1,0],
-    'C': [0,1,1, 1,0,0, 1,0,0, 1,0,0, 0,1,1],
-    'D': [1,1,0, 1,0,1, 1,0,1, 1,0,1, 1,1,0],
-    'E': [1,1,1, 1,0,0, 1,1,0, 1,0,0, 1,1,1],
-    'F': [1,1,1, 1,0,0, 1,1,0, 1,0,0, 1,0,0],
-    'G': [0,1,1, 1,0,0, 1,0,1, 1,0,1, 0,1,1],
-    'H': [1,0,1, 1,0,1, 1,1,1, 1,0,1, 1,0,1],
-    'I': [1,1,1, 0,1,0, 0,1,0, 0,1,0, 1,1,1],
-    'J': [0,0,1, 0,0,1, 0,0,1, 1,0,1, 0,1,0],
-    'K': [1,0,1, 1,0,1, 1,1,0, 1,0,1, 1,0,1],
-    'L': [1,0,0, 1,0,0, 1,0,0, 1,0,0, 1,1,1],
-    'M': [1,0,1, 1,1,1, 1,0,1, 1,0,1, 1,0,1],
-    'N': [1,1,0, 1,0,1, 1,0,1, 1,0,1, 1,0,1], 
-    'O': [0,1,0, 1,0,1, 1,0,1, 1,0,1, 0,1,0],
-    'P': [1,1,0, 1,0,1, 1,1,0, 1,0,0, 1,0,0],
-    'Q': [0,1,0, 1,0,1, 1,0,1, 1,0,1, 0,1,1], # simplified
-    'R': [1,1,0, 1,0,1, 1,1,0, 1,0,1, 1,0,1],
-    'S': [0,1,1, 1,0,0, 0,1,0, 0,0,1, 1,1,0],
-    'T': [1,1,1, 0,1,0, 0,1,0, 0,1,0, 0,1,0],
-    'U': [1,0,1, 1,0,1, 1,0,1, 1,0,1, 0,1,0],
-    'V': [1,0,1, 1,0,1, 1,0,1, 1,0,1, 0,1,0],
-    'W': [1,0,1, 1,0,1, 1,0,1, 1,1,1, 1,0,1],
-    'X': [1,0,1, 1,0,1, 0,1,0, 1,0,1, 1,0,1],
-    'Y': [1,0,1, 1,0,1, 0,1,0, 0,1,0, 0,1,0],
-    'Z': [1,1,1, 0,0,1, 0,1,0, 1,0,0, 1,1,1],
-    '0': [0,1,0, 1,0,1, 1,0,1, 1,0,1, 0,1,0],
-    '1': [0,1,0, 1,1,0, 0,1,0, 0,1,0, 1,1,1],
-    '2': [1,1,0, 0,0,1, 0,1,0, 1,0,0, 1,1,1],
-    '3': [1,1,0, 0,0,1, 0,1,0, 0,0,1, 1,1,0],
-    '4': [1,0,1, 1,0,1, 1,1,1, 0,0,1, 0,0,1],
-    '5': [1,1,1, 1,0,0, 1,1,0, 0,0,1, 1,1,0],
-    '6': [0,1,1, 1,0,0, 1,1,0, 1,0,1, 0,1,0],
-    '7': [1,1,1, 0,0,1, 0,1,0, 0,1,0, 0,1,0],
-    '8': [0,1,0, 1,0,1, 0,1,0, 1,0,1, 0,1,0],
-    '9': [0,1,0, 1,0,1, 0,1,1, 0,0,1, 0,1,0],
-    '.': [0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,1,0],
-    ':': [0,0,0, 0,1,0, 0,0,0, 0,1,0, 0,0,0],
-    '-': [0,0,0, 0,0,0, 1,1,1, 0,0,0, 0,0,0],
-    ' ': [0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0],
-    '_': [0,0,0, 0,0,0, 0,0,0, 0,0,0, 1,1,1],
+    'A': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 1,1,1,1,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1],
+    'B': [1,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 1,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 1,1,1,1,0],
+    'C': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,1, 0,1,1,1,0],
+    'D': [1,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,1,1,1,0],
+    'E': [1,1,1,1,1, 1,0,0,0,0, 1,0,0,0,0, 1,1,1,1,0, 1,0,0,0,0, 1,0,0,0,0, 1,1,1,1,1],
+    'F': [1,1,1,1,1, 1,0,0,0,0, 1,0,0,0,0, 1,1,1,1,0, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0],
+    'G': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,0, 1,0,0,0,0, 1,0,1,1,1, 1,0,0,0,1, 0,1,1,1,0],
+    'H': [1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,1,1,1,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1],
+    'I': [0,1,1,1,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,1,1,1,0],
+    'J': [0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
+    'K': [1,0,0,0,1, 1,0,0,1,0, 1,0,1,0,0, 1,1,0,0,0, 1,0,1,0,0, 1,0,0,1,0, 1,0,0,0,1],
+    'L': [1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0, 1,1,1,1,1],
+    'M': [1,0,0,0,1, 1,1,0,1,1, 1,0,1,0,1, 1,0,1,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1],
+    'N': [1,0,0,0,1, 1,1,0,0,1, 1,0,1,0,1, 1,0,0,1,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1],
+    'O': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
+    'P': [1,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 1,1,1,1,0, 1,0,0,0,0, 1,0,0,0,0, 1,0,0,0,0],
+    'Q': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,1,0,1, 1,0,0,1,0, 0,1,1,0,1],
+    'R': [1,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 1,1,1,1,0, 1,0,1,0,0, 1,0,0,1,0, 1,0,0,0,1],
+    'S': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,0, 0,1,1,1,0, 0,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
+    'T': [1,1,1,1,1, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0],
+    'U': [1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
+    'V': [1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 0,1,0,1,0, 0,1,0,1,0, 0,0,1,0,0, 0,0,1,0,0],
+    'W': [1,0,0,0,1, 1,0,0,0,1, 1,0,0,0,1, 1,0,1,0,1, 1,0,1,0,1, 1,1,0,1,1, 1,0,0,0,1],
+    'X': [1,0,0,0,1, 1,0,0,0,1, 0,1,0,1,0, 0,0,1,0,0, 0,1,0,1,0, 1,0,0,0,1, 1,0,0,0,1],
+    'Y': [1,0,0,0,1, 1,0,0,0,1, 0,1,0,1,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0],
+    'Z': [1,1,1,1,1, 0,0,0,0,1, 0,0,0,1,0, 0,0,1,0,0, 0,1,0,0,0, 1,0,0,0,0, 1,1,1,1,1],
+    '0': [0,1,1,1,0, 1,0,0,1,1, 1,0,1,0,1, 1,0,1,0,1, 1,1,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
+    '1': [0,0,1,0,0, 0,1,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,1,1,1,0],
+    '2': [0,1,1,1,0, 1,0,0,0,1, 0,0,0,0,1, 0,0,0,1,0, 0,0,1,0,0, 0,1,0,0,0, 1,1,1,1,1],
+    '3': [0,1,1,1,0, 1,0,0,0,1, 0,0,0,0,1, 0,0,1,1,0, 0,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
+    '4': [0,0,0,1,0, 0,0,1,1,0, 0,1,0,1,0, 1,0,0,1,0, 1,1,1,1,1, 0,0,0,1,0, 0,0,0,1,0],
+    '5': [1,1,1,1,1, 1,0,0,0,0, 1,0,0,0,0, 1,1,1,1,0, 0,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
+    '6': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,0, 1,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
+    '7': [1,1,1,1,1, 0,0,0,0,1, 0,0,0,0,1, 0,0,0,1,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0],
+    '8': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
+    '9': [0,1,1,1,0, 1,0,0,0,1, 1,0,0,0,1, 0,1,1,1,1, 0,0,0,0,1, 1,0,0,0,1, 0,1,1,1,0],
+    '.': [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,1,1,0,0, 0,1,1,0,0],
+    ':': [0,0,0,0,0, 0,1,1,0,0, 0,1,1,0,0, 0,0,0,0,0, 0,1,1,0,0, 0,1,1,0,0, 0,0,0,0,0],
+    '-': [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,1,1,1,1, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+    ' ': [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0],
+    ':': [0,0,0,0,0, 0,0,1,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,1,0,0, 0,0,0,0,0, 0,0,0,0,0],
+    '_': [0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 1,1,1,1,1],
 }
 
-def draw_text_fallback(screen, text, x, y, color=WHITE, scale=2):
-    """Draws text using the bitmap font map."""
+def draw_text_fallback(screen, text, x, y, color=BLACK, scale=2):
+    """Draws text using the bitmap font map. (Updated for 5x7)"""
     text = str(text).upper()
     cur_x = x
+    
+    # 5x7 Grid Parameters
+    W, H = 5, 7
+    
     for char in text:
         if char in FONT_MAP:
             data = FONT_MAP[char]
-            # 3x5 grid
-            for r in range(5):
-                for c in range(3):
-                    idx = r * 3 + c
+            # 5x7 grid
+            for r in range(H):
+                for c in range(W):
+                    idx = r * W + c
                     if data[idx]:
                         pygame.draw.rect(screen, color, 
                                          (cur_x + c*scale, y + r*scale, scale, scale))
-            cur_x += 4 * scale # 3 width + 1 spacing
+            cur_x += (W + 1) * scale # 5 width + 1 spacing
         else:
-            cur_x += 4 * scale
+            cur_x += (W + 1) * scale
 
 class VectorFont:
     def render(self, text, antialias, color):
         # Returns a surface with the text drawn manually
         scale = 2
-        w = len(text) * 4 * scale
-        h = 6 * scale # 5 rows + 1 for descenders/spacing
+        W, H = 5, 7
+        w = len(text) * (W + 1) * scale
+        h = (H + 1) * scale # 7 rows + 1 padding
         surf = pygame.Surface((w, h), pygame.SRCALPHA)
         draw_text_fallback(surf, text, 0, 0, color, scale)
         return surf
@@ -228,16 +236,8 @@ def main():
     pygame.display.set_caption("Soccer Simulation (PyGame FHD)")
     clock = pygame.time.Clock()
     
-    # Initialize Font with Vector Backup
-    try:
-        pygame.font.init()
-        font = pygame.font.SysFont("Arial", 18)
-    except Exception as e:
-        print(f"Font init failed ({e}), using fallback.")
-        font = None
-        
-    if font is None:
-        font = VectorFont() # Use our manual bitmap font
+    # Initialize Font: Strict Fallback to VectorFont to avoid Crash
+    font = VectorFont()
 
     # Initialize Logic Components
     db = DBManager()
@@ -500,37 +500,109 @@ def main():
             FIELD_WIDTH_PX, 
             FIELD_HEIGHT_PX
         )
-        pygame.draw.rect(screen, GREEN, field_rect)
-        pygame.draw.rect(screen, WHITE, field_rect, 2)
-        pygame.draw.line(screen, WHITE, 
-                         (350, 425 - FIELD_HEIGHT_PX//2), 
-                         (350, 425 + FIELD_HEIGHT_PX//2), 2)
+        # --- Detailed Field Drawing ---
+        f_len = CFG.FIELD_DIMS["length"]
+        f_wid = CFG.FIELD_DIMS["width"]
         
-        # Draw Rulers on Field
-        draw_ruler(screen, field_rect, (-5.0, 5.0, -3.5, 3.5), LIGHT_GRAY)
-
-        # Draw Bounds Visualization on Field
-        def draw_bounds_rect(bounds, color):
-            mx, Mx, my, My = bounds
-            # Convert to screen coords
-            x1, y1 = world_to_screen(mx, My) # TL
-            x2, y2 = world_to_screen(Mx, my) # BR
-            r = pygame.Rect(x1, y1, x2-x1, y2-y1)
-            pygame.draw.rect(screen, color, r, 2)
+        # Dimensions for drawing
+        # Field Rect (Green Surface): Centered at 350, 425
+        # The main 'field_rect' variable in this code seems to represent the PLAYABLE area.
+        # Screen Scale is already set: 9m -> 600px.
+        
+        # Draw Border Strip (Grass outside lines) based on Border Strip Min
+        border_m = CFG.FIELD_DIMS["border_strip_min"]
+        
+        # Convert border margin to pixels
+        # scale defined in world_to_screen is approx 66.6 px/m
+        scale = 600.0 / 9.0
+        border_px = int(border_m * scale)
+        
+        field_outer_rect = pygame.Rect(
+            field_rect.left - border_px,
+            field_rect.top - border_px,
+            field_rect.width + 2*border_px,
+            field_rect.height + 2*border_px
+        )
+        pygame.draw.rect(screen, GREEN, field_outer_rect) # Full Grass
+        
+        # Draw Field Boundary Lines (White)
+        # Note: In RoboCup, lines are part of the dimensions? Usually lines are boundary.
+        # We draw the main rectangle as the boundary.
+        pygame.draw.rect(screen, WHITE, field_rect, 2)
+        
+        # Center Line
+        mid_x = (field_rect.left + field_rect.right) // 2
+        pygame.draw.line(screen, WHITE, (mid_x, field_rect.top), (mid_x, field_rect.bottom), 2)
+        
+        # Center Circle
+        cc_radius_m = CFG.FIELD_DIMS["center_circle_diameter"] / 2.0
+        cc_radius_px = int(cc_radius_m * scale)
+        pygame.draw.circle(screen, WHITE, (mid_x, 425), cc_radius_px, 2)
+        
+        # Helper for Areas (Left side, then flip for Right)
+        def draw_field_areas(is_left):
+            # Base X (Goal Line X on screen)
+            base_x = field_rect.left if is_left else field_rect.right
+            direction = 1 if is_left else -1
             
-        draw_bounds_rect(striker_bounds, CYAN)
-        draw_bounds_rect(pass_bounds, YELLOW)
+            # 1. Penalty Area
+            pa_depth = CFG.FIELD_DIMS["penalty_area_depth"]
+            pa_width = CFG.FIELD_DIMS["penalty_area_width"]
+            
+            pa_w_px = int(pa_depth * scale)
+            pa_h_px = int(pa_width * scale)
+            pa_top_px = 425 - pa_h_px // 2
+            
+            # Rect: (x, y, w, h)
+            # If left: x is base_x. If right: x is base_x - width.
+            rx = base_x if is_left else base_x - pa_w_px
+            pygame.draw.rect(screen, WHITE, (rx, pa_top_px, pa_w_px, pa_h_px), 2)
+            
+            # 2. Goal Area
+            ga_depth = CFG.FIELD_DIMS["goal_area_depth"]
+            ga_width = CFG.FIELD_DIMS["goal_area_width"]
+            
+            ga_w_px = int(ga_depth * scale)
+            ga_h_px = int(ga_width * scale)
+            ga_top_px = 425 - ga_h_px // 2
+            
+            rx = base_x if is_left else base_x - ga_w_px
+            pygame.draw.rect(screen, WHITE, (rx, ga_top_px, ga_w_px, ga_h_px), 2)
+            
+            # 3. Penalty Mark
+            pm_dist = CFG.FIELD_DIMS["penalty_mark_dist"]
+            pm_x_m = (f_len/2.0 - pm_dist) * -1 if is_left else (f_len/2.0 - pm_dist)
+            # world_to_screen handles the coordinates
+            pm_sx, pm_sy = world_to_screen(pm_x_m, 0)
+            
+            pm_size_m = CFG.FIELD_DIMS["penalty_mark_size"]
+            pm_rad_px = int(pm_size_m / 2.0 * scale)
+            # Ensure at least 2px visible
+            pm_rad_px = max(2, pm_rad_px)
+            pygame.draw.circle(screen, WHITE, (pm_sx, pm_sy), pm_rad_px)
+            
+            # 4. Goal Structure (Outside field)
+            gw = CFG.FIELD_DIMS["goal_width"]
+            gd = CFG.FIELD_DIMS["goal_depth"]
+            
+            gw_px = int(gw * scale)
+            gd_px = int(gd * scale)
+            
+            gx = base_x - gd_px if is_left else base_x
+            gy = 425 - gw_px // 2
+            
+            # Draw Goal Depth Box
+            pygame.draw.rect(screen, WHITE, (gx, gy, gd_px, gw_px), 2)
+            
+        draw_field_areas(is_left=True)
+        draw_field_areas(is_left=False)
 
-        # Draw Goals
-        g_width, g_depth = 40, 120 
-        g_left = field_rect.left - 40 
-        g_cy = 425
-        pygame.draw.rect(screen, GREEN, (g_left, g_cy - g_depth//2, 40, g_depth), 1)
-        pygame.draw.rect(screen, GREEN, (field_rect.right, g_cy - g_depth//2, 40, g_depth), 1)
 
         # Entities Drawing
-        def draw_entity(pose, color, radius=10, shape="circle"):
+        def draw_entity(pose, color, radius=10, shape="circle", text=None, text_color=WHITE):
             sx, sy = world_to_screen(pose.x, pose.y)
+            
+            # User requested ALL players as circles, but we keep shape logic just in case
             if shape == "circle":
                 pygame.draw.circle(screen, color, (sx, sy), radius)
             elif shape == "rect":
@@ -538,18 +610,38 @@ def main():
             elif shape == "diamond":
                 points = [(sx, sy-radius), (sx+radius, sy), (sx, sy+radius), (sx-radius, sy)]
                 pygame.draw.polygon(screen, color, points)
+                
+            if text and font:
+                # heuristic centering for 5x7 font (approx)
+                lbl = font.render(str(text), True, text_color)
+                # manual center adjustment
+                try:
+                    lw = lbl.get_width()
+                    lh = lbl.get_height()
+                    screen.blit(lbl, (sx - lw//2, sy - lh//2))
+                except: pass
 
-        draw_entity(striker, CYAN, 12, "circle") 
-        draw_entity(passer, BLUE, 12, "rect")
+        # Striker (Cyan) - ID 2
+        draw_entity(striker, CYAN, 12, "circle", "2", BLACK) 
+        # Passer (Blue) - ID 1
+        draw_entity(passer, BLUE, 12, "circle", "1", WHITE)
+        # Ball (Orange)
         draw_entity(ball, ORANGE, 8, "circle")
-        draw_entity(opp_user, RED, 14, "diamond")
+        
+        # Opponent User (Red) - ID 1
+        draw_entity(opp_user, RED, 14, "circle", "1", WHITE)
 
-        # Draw Extras
+        # Draw Extras - Teammates (Blue) - Start ID 3
+        tm_idx = 3
         for (tid, tx, ty) in extra_teammate_data:
-            draw_entity(Logic.Pose2D(tx, ty), BLUE, 10, "rect")
+            draw_entity(Logic.Pose2D(tx, ty), BLUE, 10, "circle", str(tm_idx), WHITE)
+            tm_idx += 1
             
+        # Draw Extras - Opponents (Red) - Start ID 2
+        opp_idx = 2
         for (ox, oy) in extra_opponent_data:
-            draw_entity(Logic.Pose2D(ox, oy), RED, 10, "diamond")
+            draw_entity(Logic.Pose2D(ox, oy), RED, 10, "circle", str(opp_idx), WHITE)
+            opp_idx += 1
 
         if not paused and best_pos:
             tx, ty = world_to_screen(best_pos[0], best_pos[1])
@@ -609,6 +701,18 @@ def main():
              
              if recording:
                  screen.blit(font.render("● RECORDING", True, RED), (10, 85))
+
+             # Team Legend
+             start_y = 110
+             # Team A
+             screen.blit(font.render("Team A:", True, WHITE), (10, start_y))
+             # Change to Circle (Right+5, Up-3) -> (91, start_y+5)
+             pygame.draw.circle(screen, BLUE, (91, start_y + 5), 7)
+             
+             # Team B
+             screen.blit(font.render("Team B:", True, WHITE), (10, start_y + 25))
+             # Change to Circle (Right+5, Up-3) -> (91, start_y+30)
+             pygame.draw.circle(screen, RED, (91, start_y + 30), 7)
 
         pygame.display.flip()
         clock.tick(FPS)

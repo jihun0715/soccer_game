@@ -36,6 +36,33 @@ PASS_PARAMS = {
 }
 
 # ============================================================
+# 1.1) Detailed Field Dimensions (RoboCup Small Size)
+# ============================================================
+# All units in meters unless specified
+FIELD_DIMS = {
+    "length": 9.0,
+    "width": 6.0,
+    "line_thickness": 0.05, # 5cm
+    "border_strip_min": 1.0, # Minimum 1m border
+    
+    # Areas
+    "penalty_area_depth": 1.65,
+    "penalty_area_width": 4.0,
+    "goal_area_depth": 0.6,
+    "goal_area_width": 2.2,
+    
+    # Circles & Marks
+    "center_circle_diameter": 1.5, # Radius 0.75
+    "penalty_mark_dist": 1.3,      # From center of goal line
+    "penalty_mark_size": 0.1,      # 10cm diameter? or point? User said size is 10cm.
+    
+    # Goal
+    "goal_width": 1.8,
+    "goal_depth": 0.6, # 0.5 ~ 1.0
+    "goal_height": 1.2, # Not used in 2D viz but good to have
+}
+
+# ============================================================
 # 2) Striker Off-the-Ball Parameters
 # ============================================================
 ST_PARAMS = {
