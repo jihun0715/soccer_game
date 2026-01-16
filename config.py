@@ -95,16 +95,16 @@ ST_PARAMS = {
     # "ball_dist_weight": 3.0,    # Maintain specific distance from ball
     # "forward_weight": 5.2,      # Biased towards opponent goal
     "base_x_weight": 4.0,       # Try to stay at 'dist_from_goal'
-    "center_y_weight": 3.0,     # Try to stay central
+    "center_y_weight": 4.5,     # Try to stay central
     "defender_dist_weight": 20.0, # Avoid defenders (Weight)
     "defender_dist_cap": 3.0,   # Max distance to consider for avoidance
     
     "hysteresis_x_weight": 2.5, # Resist moving X (Stability)
     "hysteresis_y_weight": 2.5, # Resist moving Y (Stability)
 
-    "symmetry_weight": 10.0,    # Stay symmetric to defenders?
-    "ball_dist_weight": 3.0,    # Maintain specific distance from ball
-    "forward_weight": 1.5,      # Biased towards opponent goal
+    "symmetry_weight": 7.5,    # Stay symmetric to defenders?
+    "ball_dist_weight": 4.5,    # Maintain specific distance from ball
+    "forward_weight": 0.5,      # Biased towards opponent goal
 
     # Penalties
     # "penalty_weight": 10.0,     # General penalty weight
@@ -131,7 +131,7 @@ ST_PARAMS = {
     # "search_x_margin": 1.7,
     # "grid_step": 0.1,
     "path_confidence": 0.5, # not used
-    "search_x_margin": 1.7,
+    "search_x_margin": 2.0,
     "grid_step": 0.1,
 }
 

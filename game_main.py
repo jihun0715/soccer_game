@@ -418,18 +418,37 @@ def main():
             best_tm_cache = Logic.select_best_teammate(ball, teammates, 1, pass_params)
 
         # --- Update Heatmaps (Throttled but more frequent for smoothness) ---
+
+        # --- Update Heatmaps (Throttled but more frequent for smoothness) ---
+        
+        # 1. Update Bounds & Reference Teammate (Runs EVERY FRAME for sync)
+        # Striker Bounds
+        sb_min_x = max(-5.0, striker.x - 3.0)
+        sb_max_x = min(5.0, striker.x + 3.0)
+        sb_min_y = max(-3.5, striker.y - 2.5)
+        sb_max_y = min(3.5, striker.y + 2.5)
+        striker_bounds = (sb_min_x, sb_max_x, sb_min_y, sb_max_y)
+
+        # Pass Bounds & Reference Teammate
+        if best_tm_cache:
+             ref_tm = best_tm_cache
+        else:
+             ref_tm = Logic.Teammate(99, Logic.Pose2D(ball.x, ball.y))
+             
+        ref_x, ref_y = ref_tm.pos.x, ref_tm.pos.y
+        
+        pb_min_x = max(-5.0, ref_x - 3.0)
+        pb_max_x = min(5.0, ref_x + 3.0)
+        pb_min_y = max(-3.5, ref_y - 2.5)
+        pb_max_y = min(3.5, ref_y + 2.5)
+        pass_bounds = (pb_min_x, pb_max_x, pb_min_y, pb_max_y)
+
+        # 2. Compute Heatmap Surfaces (Throttled)
         heatmap_timer += 1
         if heatmap_timer % 5 == 0: 
-            # Wrapper for Striker Score
+            # Striker Heatmap
             def s_score(x, y, robot, ball, opps, params):
                 return Logic.compute_striker_score(x, y, robot, ball, opps, params)
-            
-            # Local Bounds: Striker +/- 3.0m
-            sb_min_x = max(-5.0, striker.x - 3.0)
-            sb_max_x = min(5.0, striker.x + 3.0)
-            sb_min_y = max(-3.5, striker.y - 2.5)
-            sb_max_y = min(3.5, striker.y + 2.5)
-            striker_bounds = (sb_min_x, sb_max_x, sb_min_y, sb_max_y)
 
             striker_hm_surf = compute_heatmap_surface(
                 100, 70, # Low Res
@@ -438,32 +457,21 @@ def main():
                 (striker, ball, opponents, st_params)
             )
             
-            # Pass Bounds: Receiver +/- 3.0m
-            if best_tm_cache:
-                ref_x, ref_y = best_tm_cache.pos.x, best_tm_cache.pos.y
-            else:
-                ref_x, ref_y = ball.x, ball.y # Fallback
-                
-            pb_min_x = max(-5.0, ref_x - 3.0)
-            pb_max_x = min(5.0, ref_x + 3.0)
-            pb_min_y = max(-3.5, ref_y - 2.5)
-            pb_max_y = min(3.5, ref_y + 2.5)
-            pass_bounds = (pb_min_x, pb_max_x, pb_min_y, pb_max_y)
-            
-            def p_score(x, y, ball, opps, params):
+            # Pass Heatmap
+            def p_score(x, y, ball, opps, params, reference_tm):
                  # Enforce Pass Distance Constraints
                  d = ((x - ball.x)**2 + (y - ball.y)**2)**0.5
                  if d < params["min_pass_threshold"] or d > params["max_pass_threshold"]:
                      return -20.0
                  
-                 tm = Logic.Teammate(99, Logic.Pose2D(x, y))
-                 return Logic.compute_pass_score_for_target(ball, tm, x, y, opps, params)
+                 # Use the Reference Teammate for correct "distance from robot" penalty
+                 return Logic.compute_pass_score_for_target(ball, reference_tm, x, y, opps, params)
                  
             pass_hm_surf = compute_heatmap_surface(
                 100, 70,
                 p_score,
                 pass_bounds,
-                (ball, opponents, pass_params)
+                (ball, opponents, pass_params, ref_tm)
             )
 
         # 4. Rendering
@@ -596,6 +604,21 @@ def main():
             
         draw_field_areas(is_left=True)
         draw_field_areas(is_left=False)
+
+        # Restore Ruler and Costmap Bounds Visualization (User Request)
+        draw_ruler(screen, field_rect, (-5.0, 5.0, -3.5, 3.5), LIGHT_GRAY)
+
+        def draw_bounds_rect(bounds, color):
+            mx, Mx, my, My = bounds
+            # Convert to screen coords
+            x1, y1 = world_to_screen(mx, My) # TL
+            x2, y2 = world_to_screen(Mx, my) # BR
+            r = pygame.Rect(x1, y1, x2-x1, y2-y1)
+            pygame.draw.rect(screen, color, r, 2)
+            
+        draw_bounds_rect(striker_bounds, CYAN)
+        draw_bounds_rect(pass_bounds, YELLOW)
+
 
 
         # Entities Drawing
