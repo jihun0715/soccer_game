@@ -188,6 +188,24 @@ def compute_striker_score(tx, ty, robot, ball, opponents, params):
                 penalty = (params["path_margin"] - dist_to_path) * params["movement_penalty_weight"] * cf
                 score -= penalty
             
+    # Goal Post Avoidance (Added)
+    # Calculate goal post positions (using params["goal_width"])
+    half_goal_w = params["goal_width"] / 2.0
+    # Left post (Top in 2D view if y-axis is up) -> (goal_x, +half_goal_w)
+    # Right post (Bottom in 2D view) -> (goal_x, -half_goal_w)
+    
+    dist_to_left_post = np.hypot(tx - goal_x, ty - half_goal_w)
+    dist_to_right_post = np.hypot(tx - goal_x, ty + half_goal_w)
+    
+    threshold = params["post_avoid_dist"]
+    weight = params["post_avoid_weight"]
+    
+    if dist_to_left_post < threshold:
+        score -= (threshold - dist_to_left_post) * weight
+        
+    if dist_to_right_post < threshold:
+        score -= (threshold - dist_to_right_post) * weight
+
     return score
 
 def compute_striker_costmap(robot, ball, opponents, params):
