@@ -79,60 +79,60 @@ ST_PARAMS = {
     "goal_area_width": 3.0,
 
     # Positioning Goals
-    # "dist_from_goal": 2.0,      # Target distance from opponent goal
-    "dist_from_goal": 4.0,
+    "dist_from_goal": 2.0,      # Target distance from opponent goal
+    # "dist_from_goal": 3.0,    # DEFENDER
 
     # Weights (Cost Function)
-    # "base_x_weight": 5.0,       # Try to stay at 'dist_from_goal'
-    # "center_y_weight": 3.0,     # Try to stay central
-    # "defender_dist_weight": 20.0, # Avoid defenders (Weight)
-    # "defender_dist_cap": 3.0,   # Max distance to consider for avoidance
-    
-    # "hysteresis_x_weight": 3.0, # Resist moving X (Stability)
-    # "hysteresis_y_weight": 3.0, # Resist moving Y (Stability)
-
-    # "symmetry_weight": 10.0,    # Stay symmetric to defenders?
-    # "ball_dist_weight": 3.0,    # Maintain specific distance from ball
-    # "forward_weight": 5.2,      # Biased towards opponent goal
-    "base_x_weight": 4.0,       # Try to stay at 'dist_from_goal'
-    "center_y_weight": 4.5,     # Try to stay central
+    "base_x_weight": 6.0,#5.0       # Try to stay at 'dist_from_goal'
+    "center_y_weight": 3.0,     # Try to stay central
     "defender_dist_weight": 20.0, # Avoid defenders (Weight)
     "defender_dist_cap": 3.0,   # Max distance to consider for avoidance
     
-    "hysteresis_x_weight": 2.5, # Resist moving X (Stability)
-    "hysteresis_y_weight": 2.5, # Resist moving Y (Stability)
+    "hysteresis_x_weight": 3.0, # Resist moving X (Stability)
+    "hysteresis_y_weight": 3.0, # Resist moving Y (Stability)
 
-    "symmetry_weight": 7.5,    # Stay symmetric to defenders?
-    "ball_dist_weight": 4.5,    # Maintain specific distance from ball
-    "forward_weight": 0.5,      # Biased towards opponent goal
+    "symmetry_weight": 10.0,    # Stay symmetric to defenders?
+    "ball_dist_weight": 3.0,    # Maintain specific distance from ball
+    "forward_weight": 3.5,#5.2      # Biased towards opponent goal
+    # "base_x_weight": 4.0,       # DEFENDER
+    # "center_y_weight": 4.5,     # DEFENDER
+    # "defender_dist_weight": 20.0, # DEFENDER
+    # "defender_dist_cap": 3.0,   # DEFENDER
+    
+    # "hysteresis_x_weight": 2.5, # DEFENDER
+    # "hysteresis_y_weight": 2.5, # DEFENDER
+
+    # "symmetry_weight": 7.5,    # DEFENDER
+    # "ball_dist_weight": 4.5,    # DEFENDER
+    # "forward_weight": 0.5,      # DEFENDER
 
     # Penalties
-    # "penalty_weight": 10.0,     # General penalty weight
-    # "path_margin": 1.5,         # Margin for shot/pass paths
-    # "opp_memory_sec": 5.0,      
-
-    # "pass_penalty_weight": 15.0,     # Penalty if pass path blocked
-    # "shot_penalty_weight": 3.0,      # Penalty if shot path blocked
-    # "movement_penalty_weight": 30.0, # Penalty if movement path blocked
-    "penalty_weight": 10.0,     # General penalty weight... not used
+    "penalty_weight": 10.0,     # General penalty weight
     "path_margin": 1.5,         # Margin for shot/pass paths
     "opp_memory_sec": 5.0,      
 
     "pass_penalty_weight": 15.0,     # Penalty if pass path blocked
     "shot_penalty_weight": 3.0,      # Penalty if shot path blocked
-    "movement_penalty_weight": 50.0, # Penalty if movement path blocked
+    "movement_penalty_weight": 30.0, # Penalty if movement path blocked
+    # "penalty_weight": 10.0,     # DEFENDER
+    # "path_margin": 1.5,         # DEFENDER
+    # "opp_memory_sec": 5.0,      
+
+    # "pass_penalty_weight": 15.0,     # DEFENDER
+    # "shot_penalty_weight": 3.0,      # DEFENDER
+    # "movement_penalty_weight": 50.0, # DEFENDER
     
     # Goal Post Avoidance
     "post_avoid_dist": 0.5,      # Distance threshold from goal post
     "post_avoid_weight": 20.0,   # Penalty weight for being too close to post
 
     # Search Grid
-    # "path_confidence": 0.5,
-    # "search_x_margin": 1.7,
-    # "grid_step": 0.1,
-    "path_confidence": 0.5, # not used
-    "search_x_margin": 2.0,
+    "path_confidence": 0.5,
+    "search_x_margin": 1.7,
     "grid_step": 0.1,
+    # "path_confidence": 0.5, # not used
+    # "search_x_margin": 2.0,   # DEFENDER
+    # "grid_step": 0.1,         # DEFENDER
 }
 
 # ============================================================
@@ -141,13 +141,13 @@ ST_PARAMS = {
 # Coordinates: (X, Y)
 # Field Range: X: [-4.5, 4.5], Y: [-3.0, 3.0]
 INITIAL_POSITIONS = {
-    # "ball": (0.0, 0.0),
-    "ball": (-3.0, 2.5),
-    # "passer": (0.1, 0.0),       # Robot holding the ball
-    "passer": (-3.0, 2.6),         # Striker has the ball
-    # "striker": (-3.0, 3.0),     # The agent we optimization
-    "striker": (0.0, 0.0),      # It's actually Defender
-    "opp_user": (-1.8, 0.5),    # User controlled opponent
+    "ball": (-3.0, -3.0),
+    # "ball": (-3.0, 2.5),
+    "passer": (-3.0, -2.9),       # Robot holding the ball
+    # "passer": (-3.0, 2.6),         # Striker has the ball
+    "striker": (-3.0, 3.0),     # The agent we optimization
+    # "striker": (0.0, 0.0),      # It's actually Defender
+    "opp_user": (1.8, 0.5),    # User controlled opponent
 }
 
 # Teammates: List of (ID, X, Y)
@@ -158,8 +158,8 @@ INITIAL_TEAMMATES = [
 
 # Opponents: List of (X, Y)
 INITIAL_OPPONENTS = [
-    (-3.5, 0.0),
-    (0.0, 1.0)
+    # (-3.5, 0.0),
+    # (0.0, 1.0)
 ]
 
 # Parameters for Robot Agents
