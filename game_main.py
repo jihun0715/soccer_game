@@ -178,21 +178,52 @@ def compute_heatmap_surface(width, height, score_func, bounds, args):
     local_max_pos = None
 
     # Gradient Stops: (Value, Color)
+    MAX_SCORE_CAP = 15.0
+    MIN_SCORE_CAP = -20.0
+
+    # Gradient Control Points
+    # 1. Highest (Bright Yellow)
+    C_HIGH = (240, 229, 115) 
+    # 2. Mid-High (Low Saturation Bright Orange - Pastel Orange)
+    C_MID_HIGH = (216, 105, 69) 
+    # 3. Mid-Low (Purple)
+    C_MID_LOW = (62, 15, 101)
+    # 4. Lowest (Black)
+    C_LOW = (0, 0, 0) # Very dark purple/black for better visibility than pure black
+
     def get_color(val):
-        if val < 0:
-            t = (val - (-10)) / 10.0
+        # Adjusted Spectrum (User Request: Orange->Yellow 8~15)
+        # Range: -15 (Black) -> -3 (Purple) -> 8 (Orange) -> 15 (Yellow)
+        
+        if val >= 8.0:
+            # Orange to Yellow (8.0 ~ 15.0)
+            t = (val - 8.0) / 7.0
             t = max(0, min(1, t))
-            return (0, int(255*t), 255) # Blue to Cyan
-        elif val < 5:
-            t = val / 5.0
-            return (0, 255, int(255*(1-t))) # Cyan to Green
-        elif val < 10:
-            t = (val - 5) / 5.0
-            return (int(255*t), 255, 0) # Green to Yellow
+            return (
+                int(C_MID_HIGH[0] + t * (C_HIGH[0] - C_MID_HIGH[0])),
+                int(C_MID_HIGH[1] + t * (C_HIGH[1] - C_MID_HIGH[1])),
+                int(C_MID_HIGH[2] + t * (C_HIGH[2] - C_MID_HIGH[2]))
+            )
+        elif val >= -3.0:
+            # Purple to Orange (-3.0 ~ 8.0)
+            t = (val - (-3.0)) / 11.0
+            t = max(0, min(1, t))
+            return (
+                int(C_MID_LOW[0] + t * (C_MID_HIGH[0] - C_MID_LOW[0])),
+                int(C_MID_LOW[1] + t * (C_MID_HIGH[1] - C_MID_LOW[1])),
+                int(C_MID_LOW[2] + t * (C_MID_HIGH[2] - C_MID_LOW[2]))
+            )
+        elif val >= -15.0:
+            # Black to Purple (-15.0 ~ -3.0)
+            t = (val - (-15.0)) / 12.0
+            t = max(0, min(1, t))
+            return (
+                int(C_LOW[0] + t * (C_MID_LOW[0] - C_LOW[0])),
+                int(C_LOW[1] + t * (C_MID_LOW[1] - C_LOW[1])),
+                int(C_LOW[2] + t * (C_MID_LOW[2] - C_LOW[2]))
+            )
         else:
-            t = (val - 10) / 5.0
-            t = max(0, min(1, t))
-            return (255, int(255*(1-t)), 0) # Yellow to Red
+            return C_LOW
 
     for py in range(height):
         world_y = max_y - py * step_y
@@ -316,8 +347,8 @@ def main():
     add_s(2, c2, "tm_select_w_dist", "TM Sel Dist", 0.0, 5.0, pass_params); c2+=1
     add_s(2, c2, "tm_select_w_x", "TM Sel X", 0.0, 5.0, pass_params); c2+=1
     add_s(2, c2, "base_score", "Pass Base Scr", 0.0, 20.0, pass_params); c2+=1
-    add_s(2, c2, "w_abs_dx", "Pass Acc X", 0.0, 5.0, pass_params); c2+=1
-    add_s(2, c2, "w_abs_dy", "Pass Acc Y", 0.0, 5.0, pass_params); c2+=1
+    add_s(2, c2, "w_abs_dx", "Pass X W", 0.0, 5.0, pass_params); c2+=1
+    add_s(2, c2, "w_abs_dy", "Pass Y W", 0.0, 5.0, pass_params); c2+=1
     add_s(2, c2, "w_x", "Pass Fwd Bias", 0.0, 5.0, pass_params); c2+=1
     add_s(2, c2, "w_y", "Pass Cnt Bias", 0.0, 5.0, pass_params); c2+=1
     add_s(2, c2, "opp_penalty", "Pass Block Pen", 0.0, 50.0, pass_params); c2+=1

@@ -55,7 +55,7 @@ def select_best_teammate(ball, teammates, my_player_id, params):
         if not tm.is_alive: continue
         dist = np.hypot(ball.x - tm.pos.x, ball.y - tm.pos.y)
         if dist <= params["min_pass_threshold"] or dist >= params["max_pass_threshold"]: continue
-        score = -(params["tm_select_w_dist"] * dist) - (params["tm_select_w_x"] * tm.pos.x)
+        score = -(params["tm_select_w_dist"] * dist) + (params["tm_select_w_x"] * tm.pos.x)
         if score > best_score:
             best_score = score
             best = tm
@@ -65,7 +65,7 @@ def compute_pass_score_for_target(ball, tm, tx, ty, opponents, params):
     score = (params["base_score"]
              - (abs(tx - tm.pos.x) * params["w_abs_dx"])
              - (abs(ty - tm.pos.y) * params["w_abs_dy"])
-             - (tx * params["w_x"])
+             + (tx * params["w_x"])
              - (abs(ty) * params["w_y"]))
     
     ax, ay = ball.x, ball.y
@@ -112,7 +112,9 @@ def compute_pass_costmap(ball, tm, opponents, params):
     return (best_tx, best_ty, best_score)
 
 def compute_striker_score(tx, ty, robot, ball, opponents, params):
-    fl = params["field_length"]; goal_x = -(fl / 2.0); base_x = goal_x + params["dist_from_goal"]
+    fl = params["field_length"]; 
+    goal_x = (fl / 2.0) # Positive X for Defender Full Court
+    base_x = goal_x - params["dist_from_goal"] # Base X is slightly left of Goal
     
     score = 0.0
     score -= abs(tx - base_x) * params["base_x_weight"]
@@ -131,32 +133,38 @@ def compute_striker_score(tx, ty, robot, ball, opponents, params):
     dist_to_defender /= normalizer
     score += dist_to_defender * params["defender_dist_weight"]
 
-    # Symmetry logic
+    # Symmetry logic (Avoid average Y of defenders)
     if defenders:
         avg_opp_y = sum(d.pos.y for d in defenders) / len(defenders)
         sym_target_y = -avg_opp_y
         score -= abs(ty - sym_target_y) * params["symmetry_weight"]
     
     # Ball distance
-    dist_x_to_ball = abs(tx - ball.x)
-    score -= abs(dist_x_to_ball - 2.5) * params["ball_dist_weight"]
+    # C++ uses full distance: norm(x - ball.x, y - ball.y)
+    full_dist_ball = np.hypot(tx - ball.x, ty - ball.y)
+    score -= abs(full_dist_ball - 2.5) * params["ball_dist_weight"]
     
-    # Forward bias
-    score += (-tx) * params["forward_weight"]
+    # Forward bias (Positive X is better for Defender Full Court)
+    score += (tx) * params["forward_weight"]
     
     pass_path = (ball.x, ball.y, tx, ty)
     shot_path = (base_x, ty, goal_x, 0.0)
 
     for opp in opponents:
+        if opp.label != "Opponent": continue # Skip GK/Teammates if labeled differently
         cf = confidence_factor(opp.last_seen_sec_ago, params["opp_memory_sec"])
         if cf <= 0.0: continue
         
         # Pass path penalty
+        # C++: if timeSinceBall < 3000ms check pass path. 
+        # For sim, we assume ball visible or use last seen. Always apply?
+        # User C++ code: if (timeSinceBall < 3000) ...
+        # Let's assume valid.
         dist_pass = point_to_segment_distance(opp.pos.x, opp.pos.y, *pass_path)
         if dist_pass < params["path_margin"]: 
             score -= (params["path_margin"] - dist_pass) * params["pass_penalty_weight"] * cf
 
-        # Shot path penalty
+        # Shot path penalty (to Goal Center)
         dist_shot = point_to_segment_distance(opp.pos.x, opp.pos.y, *shot_path)
         if dist_shot < params["path_margin"]:
             score -= (params["path_margin"] - dist_shot) * params["shot_penalty_weight"] * cf
@@ -185,6 +193,7 @@ def compute_striker_score(tx, ty, robot, ball, opponents, params):
             dist_to_path = np.hypot(opp.pos.x - closest_x, opp.pos.y - closest_y)
 
             if 0.0 < t < 1.0 and dist_to_path < params["path_margin"]:
+                # C++ uses movement_penalty_weight (50.0) here
                 penalty = (params["path_margin"] - dist_to_path) * params["movement_penalty_weight"] * cf
                 score -= penalty
             
@@ -209,7 +218,9 @@ def compute_striker_score(tx, ty, robot, ball, opponents, params):
     return score
 
 def compute_striker_costmap(robot, ball, opponents, params):
-    fl = params["field_length"]; goal_x = -(fl / 2.0); base_x = goal_x + params["dist_from_goal"]
+    fl = params["field_length"]; 
+    goal_x = (fl / 2.0); # Positive X
+    base_x = goal_x - params["dist_from_goal"] # Base X
     max_y = params["field_width"] / 2.0 - 0.5
     xs = np.arange(base_x - params["search_x_margin"], base_x + params["search_x_margin"] + 1e-9, params["grid_step"])
     ys = np.arange(-max_y, max_y + 1e-9, params["grid_step"])

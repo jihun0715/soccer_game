@@ -141,24 +141,24 @@ ST_PARAMS = {
 # Coordinates: (X, Y)
 # Field Range: X: [-4.5, 4.5], Y: [-3.0, 3.0]
 INITIAL_POSITIONS = {
-    "ball": (-3.0, -3.0),
+    "ball": (3.0, -2.9),
     # "ball": (-3.0, 2.5),
-    "passer": (-3.0, -2.9),       # Robot holding the ball
+    "passer": (3.0, -3.0),       # Robot holding the ball
     # "passer": (-3.0, 2.6),         # Striker has the ball
-    "striker": (-3.0, 3.0),     # The agent we optimization
+    "striker": (3.0, 3.0),     # The agent we optimization
     # "striker": (0.0, 0.0),      # It's actually Defender
-    "opp_user": (1.8, 0.5),    # User controlled opponent
+    "opp_user": (-1.8, 0.5),    # User controlled opponent
 }
 
 # Teammates: List of (ID, X, Y)
 INITIAL_TEAMMATES = [
     # (id, x, y)
-    (1, 3.5, 0.0)
+    (1, -3.5, 0.0)
 ]
 
 # Opponents: List of (X, Y)
 INITIAL_OPPONENTS = [
-    # (-3.5, 0.0),
+    (3.5, 0.0),
     # (0.0, 1.0)
 ]
 
